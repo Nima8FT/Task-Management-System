@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Carbon\Carbon;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,10 +19,10 @@ class TaskFactory extends Factory
     {
         return [
             'title' => fake()->realText(50),
-            'body'  => fake()->realText(200),
+            'body' => fake()->realText(200),
             'author_id' => fake()->numberBetween(1, 3),
             'date' => Carbon::now(),
-            'status' => fake()->randomElement(['pending', 'completed'])
+            'status' => fake()->randomElement(['pending', 'completed']),
         ];
     }
 }
