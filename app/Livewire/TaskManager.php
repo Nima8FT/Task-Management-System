@@ -86,9 +86,8 @@ class TaskManager extends Component
     #[On('filter-by-search')]
     public function filterBySearch(string $search): void
     {
-        $this->tasks = Task::query()->where('title', 'LIKE', '%' . $search . '%')->get();
+        $this->tasks = Task::query()->where('title', 'LIKE', '%'.$search.'%')->get();
     }
-
 
     public function render(): View
     {
