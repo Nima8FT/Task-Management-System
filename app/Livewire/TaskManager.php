@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Task;
+use Flux\Flux;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -14,13 +15,60 @@ class TaskManager extends Component
      */
     public Collection $tasks;
 
-    public function mount(): void
+    public string $title;
+
+    public string $body;
+
+    public string $date;
+
+    public int $author_id;
+
+    public string $file;
+
+    /** @var array<string, string> */
+    protected array $rules = [
+        'title' => 'required|string|max:255',
+        'date' => 'required|date',
+        'author_id' => 'required|in:1,2,3',
+        'body' => 'string',
+        'file' => 'nullable|file|max:1024',
+    ];
+
+    public function createTask(): void
     {
-        $this->tasks = Task::all();
+        $this->validate();
+
+        $data = [
+            'title' => $this->title,
+            'body' => $this->body,
+            'date' => $this->date,
+            'author_id' => $this->author_id,
+        ];
+
+        if (! empty($this->file)) {
+            $data['file'] = $this->file;
+        }
+
+        Task::create($data);
+
+        $this->resetFields();
+
+        // @phpstan-ignore-next-line
+        Flux::modals()->close();
+    }
+
+    public function resetFields(): void
+    {
+        $this->title = '';
+        $this->body = '';
+        $this->date = '';
+        $this->author_id = 0;
     }
 
     public function render(): View
     {
+        $this->tasks = Task::all();
+
         return view('livewire.task-manager');
     }
 }

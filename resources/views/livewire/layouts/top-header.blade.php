@@ -5,7 +5,7 @@
         </div>
         <div class="flex gap-4">
             <flux:input icon="magnifying-glass" placeholder="جستجو کنید..." class="focus:outline-none"/>
-            <flux:modal.trigger name="action-task">
+            <flux:modal.trigger name="create-task">
                 <flux:button variant="primary" color="zinc"
                              class="cursor-pointer transition-all ease-in-out duration-300"
                              icon="bolt">ایجاد نوشته جدید
