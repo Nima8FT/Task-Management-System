@@ -5,7 +5,9 @@
             <div class="font-bold text-xl">{{ $title  }}</div>
             <div class="flex gap-4">
                 <div class="action-btn">
-                    <flux:icon.pencil-square class="text-gray-800" variant="mini"/>
+                    <flux:modal.trigger name="action-task">
+                        <flux:icon.pencil-square class="text-gray-800" variant="mini"/>
+                    </flux:modal.trigger>
                 </div>
                 <div class="action-btn">
                     <flux:icon.trash class="text-gray-800" variant="mini"/>

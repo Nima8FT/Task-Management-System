@@ -5,4 +5,5 @@
             @livewire('components.card', ['task' => $task], key($task->id))
         @endforeach
     </main>
+    @livewire('modal')
 </div>

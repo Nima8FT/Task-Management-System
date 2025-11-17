@@ -5,10 +5,12 @@
         </div>
         <div class="flex gap-4">
             <flux:input icon="magnifying-glass" placeholder="جستجو کنید..." class="focus:outline-none"/>
-            <flux:button variant="primary" color="zinc"
-                         class="cursor-pointer transition-all ease-in-out duration-300"
-                         icon="bolt">ایجاد نوشته جدید
-            </flux:button>
+            <flux:modal.trigger name="action-task">
+                <flux:button variant="primary" color="zinc"
+                             class="cursor-pointer transition-all ease-in-out duration-300"
+                             icon="bolt">ایجاد نوشته جدید
+                </flux:button>
+            </flux:modal.trigger>
         </div>
     </div>
 </div>
