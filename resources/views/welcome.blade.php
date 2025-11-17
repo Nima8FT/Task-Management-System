@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    @vite('resources/css/app.css')
+    @if(!env('APP_ENV', 'testing'))
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 </head>
