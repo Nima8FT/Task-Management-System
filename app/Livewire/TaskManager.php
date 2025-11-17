@@ -30,7 +30,7 @@ class TaskManager extends Component
         'title' => 'required|string|max:255',
         'date' => 'required|date',
         'author_id' => 'required|in:1,2,3',
-        'body' => 'string',
+        'body' => 'required|string',
         'file' => 'nullable|file|max:1024',
     ];
 
