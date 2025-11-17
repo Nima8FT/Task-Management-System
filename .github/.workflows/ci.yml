@@ -1,0 +1,57 @@
+name: Laravel CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Copy .env
+        run: cp .env.example .env
+
+      - name: Build Docker images
+        run: docker compose build --no-cache
+
+      - name: Start Docker services
+        run: docker compose up -d
+
+      - name: Fix ownership for Composer (run as root inside container)
+        run: docker compose exec --user root -T app chown -R nima:nima /var/www
+
+      - name: Install Composer dependencies
+        run: docker compose exec -T app composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Generate app key
+        run: docker compose exec app ./artisan key:generate --ansi
+
+      - name: PHP Syntax Check
+        run: docker compose exec -T app bash -lc 'find . -path ./vendor -prune -o -type f -name "*.php" -print | xargs -P 4 -n 1 php -l'
+
+      - name: Check code style (Pint)
+        run: docker compose exec -T app ./vendor/bin/pint --test
+
+      - name: Static analysis (Larastan)
+        run: docker compose exec -T app ./vendor/bin/phpstan analyse --level=max
+
+      - name: Run migrations and seeds
+        run: docker compose exec app ./artisan migrate:fresh --seed
+
+      - name: Run tests
+        run: docker compose exec -T app php artisan test
+
+      - name: Run security audit
+        run: docker compose exec app bash -lc "git config --global --add safe.directory /var/www && composer audit || true"
+
+      - name: Tear down docker-compose (always)
+        if: always()
+        run: docker compose down --volumes --remove-orphans
