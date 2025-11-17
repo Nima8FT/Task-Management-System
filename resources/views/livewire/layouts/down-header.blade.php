@@ -5,9 +5,9 @@
                 <flux:button icon:trailing="chevron-down">انتخاب کاربر</flux:button>
 
                 <flux:menu>
-                    <flux:menu.item icon="user">کاربر شماره 1</flux:menu.item>
-                    <flux:menu.item icon="user">کاربر شماره 2</flux:menu.item>
-                    <flux:menu.item icon="user">کاربر شماره 3</flux:menu.item>
+                    <flux:menu.item icon="user" wire:click='findByUser(1)'>کاربر شماره 1</flux:menu.item>
+                    <flux:menu.item icon="user" wire:click='findByUser(2)'>کاربر شماره 2</flux:menu.item>
+                    <flux:menu.item icon="user" wire:click='findByUser(3)'>کاربر شماره 3</flux:menu.item>
                 </flux:menu>
             </flux:dropdown>
         </div>

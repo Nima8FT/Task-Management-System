@@ -3,16 +3,16 @@
 namespace App\Livewire;
 
 use App\Models\Task;
+use App\Models\User;
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class TaskManager extends Component
 {
-    /**
-     * @var Collection<int, Task>
-     */
+    /** @var Collection<int, Task> */
     public Collection $tasks;
 
     public string $title;
@@ -65,9 +65,19 @@ class TaskManager extends Component
         $this->author_id = 0;
     }
 
+    #[On('filter-by-user')]
+    public function filterByUser(int $id): void
+    {
+        $user = User::find($id);
+        // @phpstan-ignore-next-line
+        $this->tasks = $user ? $user->tasks()->get() : collect();
+    }
+
     public function render(): View
     {
-        $this->tasks = Task::all();
+        if (empty($this->tasks)) {
+            $this->tasks = Task::all();
+        }
 
         return view('livewire.task-manager');
     }
