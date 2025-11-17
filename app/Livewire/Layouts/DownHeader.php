@@ -12,6 +12,11 @@ class DownHeader extends Component
         $this->dispatch('filter-by-user', id: $id);
     }
 
+    public function filterByStatus(string $filter): void
+    {
+        $this->dispatch('filter-by-status', filter: $filter);
+    }
+
     public function render(): View
     {
         return view('livewire.layouts.down-header');

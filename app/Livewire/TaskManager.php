@@ -73,6 +73,16 @@ class TaskManager extends Component
         $this->tasks = $user ? $user->tasks()->get() : collect();
     }
 
+    #[On('filter-by-status')]
+    public function handleFilter(string $filter): void
+    {
+        if ($filter === 'all') {
+            $this->tasks = Task::all();
+        } else {
+            $this->tasks = Task::where('status', $filter)->get();
+        }
+    }
+
     public function render(): View
     {
         if (empty($this->tasks)) {

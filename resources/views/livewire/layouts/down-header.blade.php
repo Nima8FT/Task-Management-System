@@ -13,13 +13,13 @@
         </div>
         <div class="flex gap-4">
             <div class="flex">
-                <flux:icon.adjustments-horizontal/>
+                <flux:icon.adjustments-horizontal />
                 <flux:heading size="lg">فیلتر براساس:</flux:heading>
             </div>
             <div class="flex gap-4">
-                <flux:link href="#" variant="subtle">همه</flux:link>
-                <flux:link href="#" variant="subtle">انجام شده</flux:link>
-                <flux:link href="#" variant="subtle">انجام نشده</flux:link>
+                <flux:link href="#" variant="subtle" wire:click="filterByStatus('all')">همه</flux:link>
+                <flux:link href="#" variant="subtle" wire:click="filterByStatus('completed')">انجام شده</flux:link>
+                <flux:link href="#" variant="subtle" wire:click="filterByStatus('pending')">انجام نشده</flux:link>
             </div>
         </div>
     </div>
