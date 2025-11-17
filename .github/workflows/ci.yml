@@ -41,7 +41,7 @@ jobs:
         run: docker compose exec -T app ./vendor/bin/pint --test
 
       - name: Static analysis (Larastan)
-        run: docker compose exec -T app ./vendor/bin/phpstan analyse --level=max
+        run: docker compose exec -T app ./vendor/bin/phpstan analyse --level=max --memory-limit=512M
 
       - name: Run migrations and seeds
         run: docker compose exec app ./artisan migrate:fresh --seed
