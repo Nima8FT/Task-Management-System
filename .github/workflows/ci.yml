@@ -47,7 +47,8 @@ jobs:
         run: docker compose exec app ./artisan migrate:fresh --seed
 
       - name: Build assets
-        run: npm run build
+        run: |
+          docker compose exec -T app bash -c "npm install && npm run build"
 
       - name: Run tests
         run: docker compose exec -T app php artisan test
