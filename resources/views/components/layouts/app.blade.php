@@ -4,20 +4,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{-- @if(!env('APP_ENV', 'testing'))
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if(env('APP_ENV', 'local'))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @endif
 
     <title>Task Management System</title>
     @fluxAppearance
 </head>
 
 <body dir="rtl">
-    <div class="container mx-auto p-4">
-        {{ $slot }}
-    </div>
-    @fluxScripts
+<div class="container mx-auto p-4">
+    {{ $slot }}
+</div>
+@fluxScripts
 </body>
 
 </html>
