@@ -1,0 +1,56 @@
+services:
+  # PHP Service Container
+  app:
+    build:
+      args:
+        user: nima
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: task-management-system
+    container_name: task-management-system
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - task-management-network
+
+  # Nginx Service
+  nginx:
+    image: nginx:stable-perl
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d
+    networks:
+      - task-management-network
+
+  # Database Service
+  db:
+    image: postgres:17
+    container_name: db
+    restart: unless-stopped
+    environment:
+      PGPASSWORD: '${DB_PASSWORD:-secret}'
+      POSTGRES_DB: '${DB_DATABASE}'
+      POSTGRES_USER: '${DB_USERNAME}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - ./docker-compose/pgsql:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - task-management-network
+
+networks:
+  task-management-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
