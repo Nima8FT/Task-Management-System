@@ -6,7 +6,7 @@
         @endforeach
     </main>
 
-    <form wire:submit.prevent='createTask'>
+    <form wire:submit='createTask'>
         <flux:modal name="create-task" class="md:w-100">
             <div class="space-y-6">
                 <div>
@@ -20,6 +20,10 @@
                     <flux:radio value="1" label="کاربر شماره 1" checked />
                     <flux:radio value="2" label="کاربر شماره 2" />
                     <flux:radio value="3" label="کاربر شماره 3" />
+                </flux:radio.group>
+                <flux:radio.group label="وضعیت" variant="segmented" wire:model='status'>
+                    <flux:radio value="completed" label="تکمیل شده" />
+                    <flux:radio value="pending" label="در حال انجام" checked />
                 </flux:radio.group>
                 <flux:textarea label="توضیحات" wire:model='body' />
                 <flux:input type="file" label="فایل پیوست" wire:model='file' />

@@ -9,9 +9,13 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 
 class TaskManager extends Component
 {
+    use WithFileUploads;
+
     /** @var Collection<int, Task> */
     public Collection $tasks;
 
@@ -23,13 +27,16 @@ class TaskManager extends Component
 
     public int $author_id;
 
-    public string $file;
+    public string $status;
+
+    public ?TemporaryUploadedFile $file = null;
 
     /** @var array<string, string> */
     protected array $rules = [
         'title' => 'required|string|max:255',
         'date' => 'required|date',
         'author_id' => 'required|in:1,2,3',
+        'status' => 'required|in:pending,completed',
         'body' => 'required|string',
         'file' => 'nullable|file|max:1024',
     ];
@@ -41,17 +48,21 @@ class TaskManager extends Component
         $data = [
             'title' => $this->title,
             'body' => $this->body,
+            'status' => $this->status,
             'date' => $this->date,
             'author_id' => $this->author_id,
         ];
 
-        if (! empty($this->file)) {
-            $data['file'] = $this->file;
+        if ($this->file) {
+            $path = $this->file->store('files');
+            $data['file'] = $path;
         }
 
         Task::create($data);
 
         $this->resetFields();
+
+        $this->loadTasks();
 
         // @phpstan-ignore-next-line
         Flux::modals()->close();
@@ -94,7 +105,7 @@ class TaskManager extends Component
     {
         $task->delete();
 
-        $this->tasks = Task::all();
+        $this->loadTasks();
 
         // @phpstan-ignore-next-line
         Flux::modals()->close();
@@ -109,16 +120,23 @@ class TaskManager extends Component
         /** @var array<string, mixed> $data */
         $task->update($data);
 
-        $this->tasks = Task::all();
+        $this->dispatch('refresh-size', $task);
+
+        $this->loadTasks();
 
         // @phpstan-ignore-next-line
         Flux::modals()->close();
     }
 
+    public function loadTasks(): void
+    {
+        $this->tasks = Task::all();
+    }
+
     public function render(): View
     {
         if (empty($this->tasks)) {
-            $this->tasks = Task::all();
+            $this->loadTasks();
         }
 
         return view('livewire.task-manager');

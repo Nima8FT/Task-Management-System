@@ -1,6 +1,6 @@
 <div>
     <div
-        class="border border-1-white lg:w-[300px] xl:w-[400px] h-[220px] p-4 rounded-md bg-gradient-to-br {{ $status  }}   flex flex-col gap-4">
+        class="border border-1-white lg:w-[300px] xl:w-[400px] h-[220px] p-4 rounded-md bg-gradient-to-br {{ $status === 'completed' ? 'from-green-500 to-green-700' : 'from-red-700 to-red-900' }}   flex flex-col gap-4">
         <div class="flex justify-between items-center">
             <div class="font-bold text-xl">{{ $title }}</div>
             <div class="flex gap-4">
@@ -12,7 +12,7 @@
                         <flux:modal :name="'update-task'.$id" class="md:w-100">
                             <div class="space-y-6">
                                 <div>
-                                    <flux:heading size="lg">ایجاد نوشته جدید</flux:heading>
+                                    <flux:heading size="lg">به روز رسانی نوشته</flux:heading>
                                 </div>
                                 <div class="flex gap-4">
                                     <flux:input label="عنوان" wire:model='title' />
@@ -22,6 +22,10 @@
                                     <flux:radio value="1" label="کاربر شماره 1" checked />
                                     <flux:radio value="2" label="کاربر شماره 2" />
                                     <flux:radio value="3" label="کاربر شماره 3" />
+                                </flux:radio.group>
+                                <flux:radio.group label="وضعیت" variant="segmented" wire:model='status'>
+                                    <flux:radio value="completed" label="تکمیل شده" />
+                                    <flux:radio value="pending" label="در حال انجام" checked />
                                 </flux:radio.group>
                                 <flux:textarea label="توضیحات" wire:model='body' />
                                 <flux:input type="file" label="فایل پیوست" wire:model='file' />
@@ -62,7 +66,7 @@
         <div class="flex justify-between border-t-1 border-gray-300/50">
             <div class="flex gap-2 items-center mt-4">
                 <flux:icon.paper-clip variant="mini" />
-                <p class="text-sm">فایل پیوست</p>
+                <p class="text-sm">فایل پیوست {{ $size ? $size : 'ندارد' }}</p>
             </div>
             <div class="flex gap-2 items-center mt-4">
                 <p>{{ $date }}</p>
