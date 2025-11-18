@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -20,19 +21,39 @@ class Card extends Component
 
     public int $id;
 
+    #[Validate('required|string|max:255')]
     public string $title;
 
+    #[Validate('required|string')]
     public string $body;
 
+    #[Validate('required|in:1,2,3')]
     public int $author_id;
 
+    #[Validate('required|date')]
     public string $date;
 
+    #[Validate('required|in:pending,completed')]
     public string $status;
 
     public string $size;
 
+    #[Validate('nullable|file|max:1024')]
     public ?TemporaryUploadedFile $file = null;
+
+    /**
+     * @return array<string, string>
+     */
+    protected function messages(): array
+    {
+        return [
+            'title.required' => 'لطفاً عنوان را وارد کنید.',
+            'body.required' => 'لطفا توضیحات را وارد کنید.',
+            'date.required' => 'لطفا تاریخ را وارد کنید.',
+            'author_id.required' => 'لطفا کاربر را انتخاب کنید.',
+            'status.required' => 'لطفا وضعیت را انتخاب کنید.',
+        ];
+    }
 
     /**
      * Create a new component instance.
@@ -48,16 +69,6 @@ class Card extends Component
         $this->status = $task->status;
         $this->size = $this->sizeFile($task);
     }
-
-    /** @var array<string, string> */
-    protected array $rules = [
-        'title' => 'nullable|string|max:255',
-        'date' => 'nullable|date',
-        'status' => 'required|in:pending,completed',
-        'author_id' => 'nullable|in:1,2,3',
-        'body' => 'nullable|string',
-        'file' => 'nullable|file|max:1024',
-    ];
 
     public function updateTask(Task $task): void
     {

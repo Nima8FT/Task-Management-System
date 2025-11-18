@@ -7,7 +7,7 @@
     </main>
 
     <form wire:submit='createTask'>
-        <flux:modal name="create-task" class="md:w-100">
+        <flux:modal name="create-task" class="md:w-120">
             <div class="space-y-6">
                 <div>
                     <flux:heading size="lg">ایجاد نوشته جدید</flux:heading>

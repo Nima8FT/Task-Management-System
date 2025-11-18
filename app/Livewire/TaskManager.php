@@ -6,8 +6,10 @@ use App\Models\Task;
 use App\Models\User;
 use Flux\Flux;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -19,27 +21,38 @@ class TaskManager extends Component
     /** @var Collection<int, Task> */
     public Collection $tasks;
 
+    #[Validate('required|string|max:255|unique:tasks,title')]
     public string $title;
 
+    #[Validate('required|string')]
     public string $body;
 
+    #[Validate('required|date')]
     public string $date;
 
+    #[Validate('required|in:1,2,3')]
     public int $author_id;
 
+    #[Validate('required|in:pending,completed')]
     public string $status;
 
+    #[Validate('nullable|file|max:1024')]
     public ?TemporaryUploadedFile $file = null;
 
-    /** @var array<string, string> */
-    protected array $rules = [
-        'title' => 'required|string|max:255',
-        'date' => 'required|date',
-        'author_id' => 'required|in:1,2,3',
-        'status' => 'required|in:pending,completed',
-        'body' => 'required|string',
-        'file' => 'nullable|file|max:1024',
-    ];
+    /**
+     * @return array<string, string>
+     */
+    protected function messages(): array
+    {
+        return [
+            'title.unique' => 'این عنوان قبلاً استفاده شده است.',
+            'title.required' => 'لطفاً عنوان را وارد کنید.',
+            'body.required' => 'لطفا توضیحات را وارد کنید.',
+            'date.required' => 'لطفا تاریخ را وارد کنید.',
+            'author_id.required' => 'لطفا کاربر را انتخاب کنید.',
+            'status.required' => 'لطفا وضعیت را انتخاب کنید.',
+        ];
+    }
 
     public function createTask(): void
     {
@@ -104,6 +117,10 @@ class TaskManager extends Component
     public function deleteTask(Task $task): void
     {
         $task->delete();
+
+        if ($task->file) {
+            Storage::delete($task->file);
+        }
 
         $this->loadTasks();
 
