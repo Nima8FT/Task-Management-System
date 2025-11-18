@@ -2,7 +2,7 @@
     <flux:modal name="task-modal" class="md:w-120">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">ایجاد نوشته جدید</flux:heading>
+                <flux:heading size="lg">{{ $mode === 'create' ? 'ایجاد نوشته جدید' : 'ویرایش نوشته' }}</flux:heading>
             </div>
             <div class="flex gap-4">
                 <flux:input label="عنوان" wire:model='title' />

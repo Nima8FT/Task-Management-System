@@ -2,17 +2,21 @@
 
 namespace App\Livewire\Components;
 
-use App\Models\Task;
-use Carbon\Carbon;
 use Flux\Flux;
+use Carbon\Carbon;
+use App\Models\Task;
+use Livewire\Component;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
-use Livewire\Component;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class Modal extends Component
 {
+    use WithFileUploads;
+
     public string $mode = 'create';
 
     public ?Task $task = null;
@@ -113,6 +117,14 @@ class Modal extends Component
             'author_id' => $this->author_id,
             'status' => $this->status,
         ];
+
+        if ($this->file) {
+            if ($task->file) {
+                Storage::delete($task->file);
+            }
+            $path = $this->file->store('files');
+            $data['file'] = $path;
+        }
 
         $this->dispatch('update-task', $data, $task);
     }
