@@ -4,8 +4,6 @@ namespace App\Livewire\Components;
 
 use App\Models\Task;
 use Carbon\Carbon;
-use Flux\Flux;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -51,7 +49,7 @@ class Card extends Component
         'file' => 'nullable|file|max:1024',
     ];
 
-    public function updateTask(Task $task)
+    public function updateTask(Task $task): void
     {
         $this->validate();
 
@@ -66,7 +64,7 @@ class Card extends Component
             $data['file'] = $this->file;
         }
 
-        $this->dispatch('update-task',data: $data, task: $task);
+        $this->dispatch('update-task', data: $data, task: $task);
     }
 
     public function deleteTask(Task $task): void

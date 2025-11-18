@@ -86,7 +86,7 @@ class TaskManager extends Component
     #[On('filter-by-search')]
     public function filterBySearch(string $search): void
     {
-        $this->tasks = Task::query()->where('title', 'LIKE', '%' . $search . '%')->get();
+        $this->tasks = Task::query()->where('title', 'LIKE', '%'.$search.'%')->get();
     }
 
     #[On('delete-task')]
@@ -100,11 +100,15 @@ class TaskManager extends Component
         Flux::modals()->close();
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     #[On('update-task')]
     public function updateTask(array $data, Task $task): void
     {
+        /** @var array<string, mixed> $data */
         $task->update($data);
-        
+
         $this->tasks = Task::all();
 
         // @phpstan-ignore-next-line
