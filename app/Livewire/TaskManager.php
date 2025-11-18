@@ -86,7 +86,29 @@ class TaskManager extends Component
     #[On('filter-by-search')]
     public function filterBySearch(string $search): void
     {
-        $this->tasks = Task::query()->where('title', 'LIKE', '%'.$search.'%')->get();
+        $this->tasks = Task::query()->where('title', 'LIKE', '%' . $search . '%')->get();
+    }
+
+    #[On('delete-task')]
+    public function deleteTask(Task $task): void
+    {
+        $task->delete();
+
+        $this->tasks = Task::all();
+
+        // @phpstan-ignore-next-line
+        Flux::modals()->close();
+    }
+
+    #[On('update-task')]
+    public function updateTask(array $data, Task $task): void
+    {
+        $task->update($data);
+        
+        $this->tasks = Task::all();
+
+        // @phpstan-ignore-next-line
+        Flux::modals()->close();
     }
 
     public function render(): View

@@ -51,7 +51,7 @@ class Card extends Component
         'file' => 'nullable|file|max:1024',
     ];
 
-    public function updateTask(Task $task): RedirectResponse
+    public function updateTask(Task $task)
     {
         $this->validate();
 
@@ -66,29 +66,12 @@ class Card extends Component
             $data['file'] = $this->file;
         }
 
-        $task->update($data);
-
-        $this->resetFields();
-
-        // @phpstan-ignore-next-line
-        Flux::modals()->close();
-
-        return redirect()->route('tasks');
+        $this->dispatch('update-task',data: $data, task: $task);
     }
 
-    public function deleteTask(Task $task): RedirectResponse
+    public function deleteTask(Task $task): void
     {
-        $task->delete();
-
-        return redirect()->route('tasks');
-    }
-
-    public function resetFields(): void
-    {
-        $this->title = '';
-        $this->body = '';
-        $this->date = '';
-        $this->author_id = 0;
+        $this->dispatch('delete-task', task: $task);
     }
 
     public function render(): View
