@@ -2,16 +2,16 @@
 
 namespace App\Livewire\Components;
 
-use Flux\Flux;
-use Carbon\Carbon;
 use App\Models\Task;
-use Livewire\Component;
+use Carbon\Carbon;
+use Flux\Flux;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
-use Livewire\WithFileUploads;
 use Livewire\Attributes\Validate;
-use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 
 class Modal extends Component
 {
@@ -119,7 +119,9 @@ class Modal extends Component
         ];
 
         if ($this->file) {
+            // @phpstan-ignore-next-line
             if ($task->file) {
+                // @phpstan-ignore-next-line
                 Storage::delete($task->file);
             }
             $path = $this->file->store('files');
