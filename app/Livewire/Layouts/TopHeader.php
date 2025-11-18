@@ -9,6 +9,11 @@ class TopHeader extends Component
 {
     public string $search = '';
 
+    public function createTask(): void
+    {
+        $this->dispatch('open-modal-create');
+    }
+
     public function updatedSearch(): void
     {
         $this->dispatch('filter-by-search', search: $this->search);

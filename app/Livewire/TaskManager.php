@@ -21,72 +21,21 @@ class TaskManager extends Component
     /** @var Collection<int, Task> */
     public Collection $tasks;
 
-    #[Validate('required|string|max:255|unique:tasks,title')]
-    public string $title;
-
-    #[Validate('required|string')]
-    public string $body;
-
-    #[Validate('required|date')]
-    public string $date;
-
-    #[Validate('required|in:1,2,3')]
-    public int $author_id;
-
-    #[Validate('required|in:pending,completed')]
-    public string $status;
-
     #[Validate('nullable|file|max:1024')]
     public ?TemporaryUploadedFile $file = null;
 
     /**
-     * @return array<string, string>
+     * @param  array<string, mixed>  $data
      */
-    protected function messages(): array
+    #[On('create-task')]
+    public function createTask(array $data): void
     {
-        return [
-            'title.unique' => 'این عنوان قبلاً استفاده شده است.',
-            'title.required' => 'لطفاً عنوان را وارد کنید.',
-            'body.required' => 'لطفا توضیحات را وارد کنید.',
-            'date.required' => 'لطفا تاریخ را وارد کنید.',
-            'author_id.required' => 'لطفا کاربر را انتخاب کنید.',
-            'status.required' => 'لطفا وضعیت را انتخاب کنید.',
-        ];
-    }
-
-    public function createTask(): void
-    {
-        $this->validate();
-
-        $data = [
-            'title' => $this->title,
-            'body' => $this->body,
-            'status' => $this->status,
-            'date' => $this->date,
-            'author_id' => $this->author_id,
-        ];
-
-        if ($this->file) {
-            $path = $this->file->store('files');
-            $data['file'] = $path;
-        }
-
         Task::create($data);
-
-        $this->resetFields();
 
         $this->loadTasks();
 
         // @phpstan-ignore-next-line
         Flux::modals()->close();
-    }
-
-    public function resetFields(): void
-    {
-        $this->title = '';
-        $this->body = '';
-        $this->date = '';
-        $this->author_id = 0;
     }
 
     #[On('filter-by-user')]

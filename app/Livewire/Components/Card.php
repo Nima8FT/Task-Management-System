@@ -60,37 +60,12 @@ class Card extends Component
      */
     public function mount(Task $task): void
     {
-        $this->task = $task;
-        $this->id = $task->id;
-        $this->title = Str::limit($task->title, 20, '...');
-        $this->body = Str::limit($task->body, 250, '...');
-        $this->author_id = $task->author_id;
-        $this->date = Carbon::parse($task->date)->format('Y-m-d');
-        $this->status = $task->status;
-        $this->size = $this->sizeFile($task);
+        $this->syncFromTask($task);
     }
 
-    public function updateTask(Task $task): void
+    public function openModal(Task $task): void
     {
-        $this->validate();
-
-        $data = [
-            'title' => $this->title,
-            'body' => $this->body,
-            'date' => $this->date,
-            'status' => $this->status,
-            'author_id' => $this->author_id,
-        ];
-
-        if ($this->file) {
-            if ($task->file) {
-                Storage::delete($task->file);
-            }
-            $path = $this->file->store('files');
-            $data['file'] = $path;
-        }
-
-        $this->dispatch('update-task', data: $data, task: $task);
+        $this->dispatch('open-modal-update', task: $task);
     }
 
     public function deleteTask(Task $task): void
@@ -112,11 +87,28 @@ class Card extends Component
     #[On('refresh-size')]
     public function refreshSize(Task $task): void
     {
-        $this->size = $this->sizeFile($task);
+        if ($task->id !== $this->id) {
+            return;
+        }
+
+        $this->syncFromTask($task);
     }
 
     public function render(): View
     {
         return view('livewire.Components.card');
+    }
+
+    private function syncFromTask(Task $task): void
+    {
+        $this->task = $task;
+        $this->id = $task->id;
+        $this->title = Str::limit($task->title, 20, '...');
+        $this->body = Str::limit($task->body, 250, '...');
+        $this->author_id = $task->author_id;
+        $this->date = Carbon::parse($task->date)->format('Y-m-d');
+        // $this->date = $task->date;
+        $this->status = $task->status;
+        $this->size = $this->sizeFile($task);
     }
 }
